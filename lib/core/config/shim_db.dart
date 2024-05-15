@@ -24,6 +24,10 @@ class AppLocalDB extends AppLocalKeys {
     return await _box.get(key);
   }
 
+  static Future<void> delete(String key) async {
+    return await _box.delete(key);
+  }
+
   // close db
   Future<void> close() async {
     await _box.close();

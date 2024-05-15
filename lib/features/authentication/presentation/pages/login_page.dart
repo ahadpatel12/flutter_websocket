@@ -35,11 +35,6 @@ class LoginPage extends StatelessWidget {
             const Gap(AppDimens.space8),
             ElevatedButton(
                 onPressed: () async {
-                  await AppLocalDB.write(key: AppLocalKeys.user, value: {
-                    "name": nameController.text.trim(),
-                    "password": passwordController.text.trim()
-                  });
-
                   var user = await AppLocalDB.read(AppLocalKeys.user);
 
                   print("User is $user");
