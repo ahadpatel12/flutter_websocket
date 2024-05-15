@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 class RouteUtils {
   var goRouter = GoRouter(
       navigatorKey: NavigationService().navigatorKey,
-      initialLocation: AppRoutes.login,
+      initialLocation: AppRoutes.home,
       routes: [
         GoRoute(
             builder: (context, state) => const LoginPage(),
