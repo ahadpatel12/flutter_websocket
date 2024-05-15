@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _init() async {
     print("Init called");
-    wsUrl = Uri.parse('ws://localhost:8080');
+    wsUrl = Uri.parse('wss://echo.websocket.org/');
     channel = WebSocketChannel.connect(wsUrl);
     await channel.ready;
   }
