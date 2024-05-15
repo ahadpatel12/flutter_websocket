@@ -1,27 +1,31 @@
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
-class AppLocalKeys {
-  String boxName = 'flutter-web';
+abstract class AppLocalKeys {
+  static const String boxName = 'flutter-web';
+  static const String user = 'user';
+  static const String chats = 'chat';
 }
 
 class AppLocalDB extends AppLocalKeys {
-  late Box box;
+  static late Box _box;
+
   // initialize db
-  Future<void> init() async {
-    box = Hive.box(boxName);
+  static Future<void> init() async {
+    _box = await Hive.openBox(AppLocalKeys.boxName);
+    print("box intiated");
   }
 
-  Future<void> write<T>({required String key, required T value}) async {
-    return await box.put(key, value);
+  static Future<void> write<T>({required String key, required T value}) async {
+    return await _box.put(key, value);
   }
 
-  Future<T> read<T>(String key) async {
-    return await box.get(key);
+  static Future<T> read<T>(String key) async {
+    return await _box.get(key);
   }
 
   // close db
   Future<void> close() async {
-    await box.close();
+    await _box.close();
   }
 }

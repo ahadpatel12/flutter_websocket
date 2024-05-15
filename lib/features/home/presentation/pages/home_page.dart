@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_web/core/routes/app_route_keys.dart';
+import 'package:flutter_web/core/routes/navigation_service.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class HomePage extends StatefulWidget {
@@ -45,6 +47,14 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text('Flutter Web socket'),
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                NavigationService()
+                    .pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+              },
+              child: Icon(Icons.logout))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

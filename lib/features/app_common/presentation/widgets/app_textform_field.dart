@@ -3,9 +3,13 @@ import 'package:flutter_web/core/config/app_colors.dart';
 
 class AppTextFormField extends StatelessWidget {
   final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final bool obscureText;
   const AppTextFormField({
     super.key,
     this.controller,
+    this.validator,
+    this.obscureText = false,
   });
 
   InputBorder get outlineBorder => OutlineInputBorder(
@@ -21,6 +25,8 @@ class AppTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      validator: validator,
+      obscureText: obscureText,
       decoration: InputDecoration(
           border: outlineBorder,
           enabledBorder: outlineBorder,
