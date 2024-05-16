@@ -25,7 +25,7 @@ class RouteUtils {
             name: AppRoutes.chatList,
             path: AppRoutes.chatList),
         GoRoute(
-            builder: (context, state) => const RegisterPage(),
+            builder: (context, state) => RegisterPage(),
             name: AppRoutes.register,
             path: AppRoutes.register),
         GoRoute(

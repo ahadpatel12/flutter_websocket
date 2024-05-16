@@ -4,4 +4,5 @@ class AppColors {
   static const Color primary = Colors.amber;
   static const Color error = Colors.red;
   static const Color fontColor = Colors.black;
+  static const Color white = Colors.white;
 }

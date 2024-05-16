@@ -36,7 +36,7 @@ class User {
         "password": password,
       };
 
-  static Future<void> save(User user) async {
+  static Future<void> register(User user) async {
     List<User> userList = await getAll();
 
     if (userList.isNotEmpty) {
@@ -51,9 +51,24 @@ class User {
         key: AppLocalKeys.user, value: user.toJson());
   }
 
+  static Future<bool> login(User user) async {
+    List<User> userList = await getAll();
+
+    User? userFromDb =
+        userList.firstWhereOrNull((element) => element.name == user.name);
+
+    if (userFromDb == null) throw Exception('User Does not exists');
+
+    bool passwordMatch = user.password == userFromDb.password;
+
+    if (!passwordMatch) throw Exception('Invalid Password');
+
+    await AppLocalDB.putMap(key: AppLocalKeys.user, value: user.toJson());
+    return true;
+  }
+
   static Future<User?> get() async {
     var res = await AppLocalDB.getMap(AppLocalKeys.user);
-    print("response form hive $res");
     if (res != null) {
       return User.fromJson(res);
     }
@@ -62,6 +77,7 @@ class User {
 
   static Future<List<User>> getAll() async {
     var res = await AppLocalDB.getList(AppLocalKeys.userList);
+    print("list from hive $res");
     return res.map((e) => User.fromJson(e)).toList();
   }
 

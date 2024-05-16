@@ -1,10 +1,24 @@
 part of 'authentication_bloc.dart';
 
-abstract class AuthenticationState extends Equatable {
-  const AuthenticationState();
-}
+class AuthenticationState extends Equatable {
+  final ResponseState responseState;
+  final String? message;
 
-class AuthenticationInitial extends AuthenticationState {
+  const AuthenticationState({
+    this.responseState = ResponseState.initial,
+    this.message,
+  });
+
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [responseState, message];
+
+  AuthenticationState copyWith({
+    ResponseState? responseState,
+    String? message,
+  }) {
+    return AuthenticationState(
+      responseState: responseState ?? this.responseState,
+      message: message,
+    );
+  }
 }
