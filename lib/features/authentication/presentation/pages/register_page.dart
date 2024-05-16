@@ -42,12 +42,23 @@ class RegisterPage extends StatelessWidget {
             const Gap(AppDimens.space8),
             ElevatedButton(
                 onPressed: () async {
+                  await AppLocalDB.deleteAll();
+                },
+                child: Text('Clear All ')),
+            const Gap(AppDimens.space8),
+            ElevatedButton(
+                onPressed: () async {
                   var user = User(
                       name: nameController.text.trim(),
                       password: passwordController.text.trim());
                   await User.save(user);
 
-                  print("User is $user");
+                  var list = await User.getAll();
+                  var currentUser = await User.get();
+                  print("User List = ${list}");
+                  print("Current User = $currentUser");
+
+                  // print("User is $user");
                 },
                 child: Text('Submit')),
             const Gap(AppDimens.space8),

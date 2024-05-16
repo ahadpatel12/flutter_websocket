@@ -1,5 +1,5 @@
 import 'package:uuid/uuid.dart';
-
+import 'package:collection/collection.dart';
 import '../config/shim_db.dart';
 
 class User {
@@ -37,20 +37,38 @@ class User {
       };
 
   static Future<void> save(User user) async {
-    var userList = await AppLocalDB.getList(AppLocalKeys.userList);
+    List<User> userList = await getAll();
+
     if (userList.isNotEmpty) {
-      userList.add(user);
-      await AppLocalDB.putList(key: AppLocalKeys.user, value: userList);
+      var userExists = userList.any((element) => element.name == user.name);
+      if (userExists) {
+        throw Exception('User Already Exists');
+      }
     }
-    return await AppLocalDB.putObject(key: AppLocalKeys.user, value: user);
+    userList.add(user);
+    await putAll(userList);
+    return await AppLocalDB.putMap(
+        key: AppLocalKeys.user, value: user.toJson());
   }
 
   static Future<User?> get() async {
     var res = await AppLocalDB.getMap(AppLocalKeys.user);
+    print("response form hive $res");
     if (res != null) {
-      User.fromJson(res);
+      return User.fromJson(res);
     }
     return null;
+  }
+
+  static Future<List<User>> getAll() async {
+    var res = await AppLocalDB.getList(AppLocalKeys.userList);
+    return res.map((e) => User.fromJson(e)).toList();
+  }
+
+  static Future<void> putAll(List<User> userList) async {
+    return await AppLocalDB.putList(
+        key: AppLocalKeys.userList,
+        value: userList.map((e) => e.toJson()).toList());
   }
 
   static Future<void> logout() async {
