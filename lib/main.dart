@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_web/core/config/shim_db.dart';
 import 'package:flutter_web/core/routes/route_utils.dart';
+import 'package:flutter_web/core/user/user.dart';
 import 'package:flutter_web/service_locator.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
-void main() {
+void main() async {
   usePathUrlStrategy();
   setupLocator();
-  AppLocalDB.init();
+  await AppLocalDB.init();
+  // User().isLoggedIn;
   runApp(const MyApp());
 }
 

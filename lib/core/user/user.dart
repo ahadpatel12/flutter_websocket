@@ -36,6 +36,11 @@ class User {
         "password": password,
       };
 
+  Future<bool> get isLoggedIn async {
+    var user = await get();
+    return user != null;
+  }
+
   static Future<void> register(User user) async {
     List<User> userList = await getAll();
 
@@ -77,7 +82,7 @@ class User {
 
   static Future<List<User>> getAll() async {
     var res = await AppLocalDB.getList(AppLocalKeys.userList);
-    print("list from hive $res");
+    print("Response $res");
     return res.map((e) => User.fromJson(e)).toList();
   }
 

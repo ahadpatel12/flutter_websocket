@@ -38,6 +38,7 @@ class LoginPage extends StatelessWidget {
                 controller: nameController,
               ),
               AppTextFormField(
+                obscureText: true,
                 label: 'Password',
                 controller: passwordController,
               ),
@@ -68,8 +69,6 @@ class LoginPage extends StatelessWidget {
                         context
                             .read<AuthenticationBloc>()
                             .add(LoginEvent(user: user));
-                        // var user = await User.get();
-                        // print("User is ${user?.toJson()}");
                       },
                       child: Text('Submit'));
                 },
