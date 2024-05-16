@@ -1,4 +1,5 @@
 import 'package:flutter_web/core/config/shim_db.dart';
+import 'package:flutter_web/core/routes/navigation_service.dart';
 import 'package:flutter_web/core/user/user.dart';
 import 'package:get_it/get_it.dart';
 
@@ -8,4 +9,7 @@ Future<void> setupLocator() async {
   // config
   sl.registerLazySingleton(() => AppLocalDB());
   sl.registerLazySingleton(() => User());
+
+  // utils
+  sl.registerLazySingleton(() => NavigationService());
 }

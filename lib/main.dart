@@ -1,6 +1,7 @@
 import 'dart:ui_web';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_web/core/config/shim_db.dart';
 import 'package:flutter_web/core/routes/route_utils.dart';
 import 'package:flutter_web/service_locator.dart';
@@ -18,14 +19,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return ScreenUtilInit(
+      ensureScreenSize: true,
+      child: MaterialApp.router(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        routerConfig: RouteUtils().goRouter,
       ),
-      routerConfig: RouteUtils().goRouter,
     );
   }
 }
