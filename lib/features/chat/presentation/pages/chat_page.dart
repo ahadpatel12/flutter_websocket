@@ -1,9 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web/core/routes/app_route_keys.dart';
 import 'package:flutter_web/core/routes/navigation_service.dart';
 import 'package:flutter_web/core/utils/app_dimens.dart';
 import 'package:flutter_web/features/chat/data/models/chat.dart';
+import 'package:flutter_web/features/chat/presentation/widgets/chat_bubble.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uuid/uuid.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 // class ChatPage extends StatelessWidget {
@@ -25,20 +31,30 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   var controller = TextEditingController();
   late Uri wsUrl;
+
   late WebSocketChannel channel;
 
-  List<Chat> messages = [];
+  ValueNotifier<List<Chat>> messages = ValueNotifier([]);
 
   Future<void> _init() async {
     print("Init called");
     wsUrl = Uri.parse('wss://echo.websocket.org/');
     channel = WebSocketChannel.connect(wsUrl);
     await channel.ready;
+
+    channel.stream.listen((event) {
+      print(event);
+      _addDataToList(event);
+    });
+
+    // streamController.addStream(WebSocketChannel.connect(wsUrl).stream);
+    // streamController = WebSocketChannel.connect(wsUrl).stream;
   }
 
   @override
   void initState() {
     _init();
+
     super.initState();
   }
 
@@ -57,11 +73,30 @@ class _ChatPageState extends State<ChatPage> {
   void _onSendClicked(String value) {
     print("on Send clicked");
     var params = GoRouterState.of(context).uri.queryParameters;
-    var chat =
-        Chat(roomId: params['roomId'] ?? '', message: value, sentByMe: false);
 
-    channel.sink.add(chat.copyWith(sentByMe: true));
-    channel.sink.add(chat);
+    var chat =
+        Chat(roomId: params['RoomId'] ?? '', message: value, sentByMe: true);
+
+    channel.sink.add(chat.toJson());
+    var chat2 = chat.copyWith(
+        id: const Uuid().v1(),
+        sentByMe: false,
+        createdAt: DateTime.now().add(Duration(milliseconds: 100)));
+    print(chat.toJson());
+    print(chat2.toJson());
+    channel.sink.add(chat2.toJson());
+  }
+
+  void _addDataToList(String event) {
+    // if (snapshot.hasData) {
+    try {
+      messages.value.add(Chat.fromJson(event));
+      messages.value.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+      messages.notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+    // }
   }
 
   @override
@@ -102,37 +137,16 @@ class _ChatPageState extends State<ChatPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            // Row(
-            //   children: [
-            //     Expanded(
-            //       child: TextFormField(
-            //         decoration:
-            //             InputDecoration(enabledBorder: OutlineInputBorder()),
-            //         controller: controller,
-            //         onFieldSubmitted: _onSendClicked,
-            //       ),
-            //     ),
-            //     IconButton(
-            //         onPressed: () => _onSendClicked(controller.text),
-            //         icon: Icon(Icons.send))
-            //   ],
-            // ),
             Expanded(
-              child: StreamBuilder(
-                stream: channel.stream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    messages.add(snapshot.data);
-                  }
-                  print("snapshot data ${snapshot.data}");
+              child: ValueListenableBuilder(
+                valueListenable: messages,
+                builder: (context, value, child) {
                   return ListView.builder(
                     reverse: true,
                     shrinkWrap: true,
-                    itemCount: messages.length,
+                    itemCount: messages.value.length,
                     itemBuilder: (context, index) {
-                      return Container(
-                        child: Text(messages[index].message),
-                      );
+                      return ChatBubble(chat: messages.value[index]);
                     },
                   );
                 },
