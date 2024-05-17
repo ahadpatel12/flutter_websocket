@@ -9,10 +9,8 @@ class GetAllRoomsEvent extends RoomEvent {
   List<Object?> get props => [];
 }
 
-class AddRoomEvent extends RoomEvent {
-  final Room room;
-
-  const AddRoomEvent({required this.room});
+class CreateRoomEvent extends RoomEvent {
+  const CreateRoomEvent();
   @override
-  List<Object?> get props => [room];
+  List<Object?> get props => [];
 }

@@ -1,1 +1,1 @@
-enum ResponseState { initial, loading, success, failure }
+enum ResponseState { initial, loading, success, failure, created }

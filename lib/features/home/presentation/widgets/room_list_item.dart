@@ -6,11 +6,14 @@ import 'package:gap/gap.dart';
 
 class RoomListItem extends StatelessWidget {
   final Room room;
-  const RoomListItem({super.key, required this.room});
+  final VoidCallback? onTap;
+  final String? networkImage;
+  const RoomListItem(
+      {super.key, required this.room, this.onTap, this.networkImage});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Card(
         child: Padding(
           padding:
@@ -21,8 +24,8 @@ class RoomListItem extends StatelessWidget {
                 child: Row(
                   children: <Widget>[
                     CircleAvatar(
-                      backgroundImage:
-                          NetworkImage('https://picsum.photos/500/500'),
+                      backgroundImage: NetworkImage(
+                          networkImage ?? 'https://picsum.photos/500/500/'),
                       maxRadius: 30,
                     ),
                     const Gap(16),
