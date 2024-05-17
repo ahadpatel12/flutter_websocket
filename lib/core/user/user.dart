@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:uuid/uuid.dart';
 import 'package:collection/collection.dart';
 import '../config/shim_db.dart';
@@ -24,13 +26,17 @@ class User {
         password: password ?? this.password,
       );
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
+  factory User.fromJson(String str) => User.fromMap(json.decode(str));
+
+  String toJson() => json.encode(toMap());
+
+  factory User.fromMap(Map<String, dynamic> json) => User(
         id: json["id"] ?? '',
         name: json["name"] ?? '',
         password: json["password"] ?? '',
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         "id": const Uuid().v1(),
         "name": name,
         "password": password,
@@ -52,7 +58,7 @@ class User {
     }
     userList.add(user);
     await putAll(userList);
-    return await AppLocalDB.putMap(
+    return await AppLocalDB.putString(
         key: AppLocalKeys.user, value: user.toJson());
   }
 
@@ -68,13 +74,13 @@ class User {
 
     if (!passwordMatch) throw Exception('Invalid Password');
 
-    await AppLocalDB.putMap(key: AppLocalKeys.user, value: user.toJson());
+    await AppLocalDB.putString(key: AppLocalKeys.user, value: user.toJson());
     return true;
   }
 
   static Future<User?> get() async {
-    var res = await AppLocalDB.getMap(AppLocalKeys.user);
-    if (res != null) {
+    var res = await AppLocalDB.getString(AppLocalKeys.user);
+    if (res.isNotEmpty) {
       return User.fromJson(res);
     }
     return null;

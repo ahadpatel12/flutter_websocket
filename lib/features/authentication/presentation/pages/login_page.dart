@@ -45,7 +45,7 @@ class LoginPage extends StatelessWidget {
               const Gap(AppDimens.space8),
               ElevatedButton(
                   onPressed: () async {
-                    print("current user ${(await User.get())?.toJson()}");
+                    print("current user ${(await User.get())?.toMap()}");
                   },
                   child: Text("Get user Name")),
               const Gap(AppDimens.space8),
