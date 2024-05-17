@@ -24,8 +24,11 @@ class RoomBloc extends Bloc<RoomEvent, RoomState> {
     Box<Room> rooms = await AppLocalDB().rooms;
 
     if (rooms.isNotEmpty) {
-      emit.call(state.copyWith(
-          responseState: ResponseState.success, rooms: rooms.values.toList()));
+      List<Room> list = rooms.values.toList();
+
+      list.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+      emit.call(
+          state.copyWith(responseState: ResponseState.success, rooms: list));
       return;
     }
     emit.call(state.copyWith(
@@ -34,7 +37,7 @@ class RoomBloc extends Bloc<RoomEvent, RoomState> {
 
   Future<void> createRoom(
       CreateRoomEvent event, Emitter<RoomState> emit) async {
-    emit.call(state.copyWith(responseState: ResponseState.loading));
+    // emit.call(state.copyWith(responseState: ResponseState.loading));
     try {
       var room = Room(id: const Uuid().v1(), createdAt: DateTime.now());
       Box<Room> rooms = await AppLocalDB().rooms;

@@ -4,6 +4,7 @@ import 'package:flutter_web/core/config/shim_db.dart';
 import 'package:flutter_web/core/routes/app_route_keys.dart';
 import 'package:flutter_web/core/routes/navigation_service.dart';
 import 'package:flutter_web/core/utils/app_dimens.dart';
+import 'package:flutter_web/core/utils/app_snackbar.dart';
 import 'package:flutter_web/core/utils/common_functions.dart';
 import 'package:flutter_web/features/chat/data/models/chat.dart';
 import 'package:flutter_web/features/chat/data/models/room.dart';
@@ -38,6 +39,8 @@ class HomePage extends StatelessWidget {
         bottomNavigationBar: BlocListener<RoomBloc, RoomState>(
           listener: (context, state) {
             if (state.responseState == ResponseState.created) {
+              AppSnackBars.showSnackBar(
+                  alertType: AlertType.success, message: "New Room Created");
               context.goNamed(AppRoutes.chat,
                   queryParameters: {"roomId": state.createdRoom!.id});
             }
