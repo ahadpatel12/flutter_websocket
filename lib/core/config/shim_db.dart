@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:flutter_web/features/chat/data/models/chat.dart';
+import 'package:flutter_web/features/chat/data/models/room.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 abstract class AppLocalKeys {
   static const String boxName = 'flutter-web';
+  static const String roomBox = 'rooms';
   static const String user = 'user';
   static const String userList = 'user-list';
   static const String chats = 'chat';
@@ -12,11 +15,22 @@ abstract class AppLocalKeys {
 
 class AppLocalDB extends AppLocalKeys {
   static late Box _box;
+  static late Box roomBox;
+
+  Future<Box<Room>> get rooms async =>
+      await Hive.openBox<Room>(AppLocalKeys.roomBox);
 
   // initialize db
   static Future<void> init() async {
+    _registerAdapters();
     _box = await Hive.openBox(AppLocalKeys.boxName);
+    roomBox = await Hive.openBox<Room>(AppLocalKeys.roomBox);
     print("box initiated");
+  }
+
+  static void _registerAdapters() {
+    Hive.registerAdapter(RoomAdapter());
+    Hive.registerAdapter(ChatAdapter());
   }
 
   static Future<void> putString(

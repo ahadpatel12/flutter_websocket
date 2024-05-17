@@ -1,13 +1,21 @@
+import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';
 import 'dart:convert';
-
 import 'package:uuid/uuid.dart';
 
+part 'chat.g.dart';
+
+@HiveType(typeId: 1)
 class Chat {
+  @HiveField(0)
   final String? id;
+  @HiveField(1)
   final String roomId;
+  @HiveField(2)
   final String message;
+  @HiveField(3)
   final bool sentByMe;
+  @HiveField(4)
   final DateTime? createdAt;
 
   Chat({

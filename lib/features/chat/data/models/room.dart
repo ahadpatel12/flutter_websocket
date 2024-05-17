@@ -1,12 +1,20 @@
-import 'package:meta/meta.dart';
+import 'package:hive/hive.dart';
 import 'dart:convert';
 
 import 'chat.dart';
 
-class Room {
+part 'room.g.dart';
+
+@HiveType(typeId: 0)
+class Room extends HiveObject {
+  @HiveField(0)
   final String? id;
-  final List<String> chats;
-  final String? createdAt;
+
+  @HiveField(1, defaultValue: [])
+  final List<Chat> chats;
+
+  @HiveField(2)
+  final DateTime? createdAt;
 
   Room({
     this.id,
@@ -16,8 +24,8 @@ class Room {
 
   Room copyWith({
     String? id,
-    List<String>? chats,
-    String? createdAt,
+    List<Chat>? chats,
+    DateTime? createdAt,
   }) =>
       Room(
         id: id ?? this.id,
@@ -31,13 +39,14 @@ class Room {
 
   factory Room.fromMap(Map<String, dynamic> json) => Room(
         id: json["id"],
-        chats: List<String>.from(json["chats"].map((x) => x)),
-        createdAt: json["createdAt"],
+        chats: List<Chat>.from(json["chats"].map((x) => Chat.fromJson(x))),
+        createdAt: DateTime.parse(json["createdAt"]),
       );
 
   Map<String, dynamic> toMap() => {
         "id": id,
-        "chats": List<Chat>.from(chats.map((x) => Chat.fromJson(x))),
-        "createdAt": createdAt,
+        "chats": List<dynamic>.from(chats.map((x) => x.toMap())),
+        "createdAt":
+            createdAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
       };
 }
