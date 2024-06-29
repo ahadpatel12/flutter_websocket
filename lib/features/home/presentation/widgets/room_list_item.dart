@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_web/core/config/app_colors.dart';
 import 'package:flutter_web/core/config/app_font_style.dart';
+import 'package:flutter_web/core/extensions/text_style_extension.dart';
+import 'package:flutter_web/core/utils/app_dimens.dart';
 import 'package:flutter_web/core/utils/app_extensions.dart';
 import 'package:flutter_web/features/chat/data/models/room.dart';
 import 'package:gap/gap.dart';
@@ -8,47 +11,29 @@ class RoomListItem extends StatelessWidget {
   final Room room;
   final VoidCallback? onTap;
   final String? networkImage;
+  final bool selected;
   const RoomListItem(
-      {super.key, required this.room, this.onTap, this.networkImage});
+      {super.key, required this.room, this.onTap, this.networkImage,this.selected= false});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Card(
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-          child: Row(
-            children: [
-              Expanded(
-                child: Row(
-                  children: <Widget>[
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          networkImage ?? 'https://picsum.photos/500/500/'),
-                      maxRadius: 30,
-                    ),
-                    const Gap(16),
-                    Expanded(
-                      child: Container(
-                        color: Colors.transparent,
-                        child: Text(
-                          room.id ?? '',
-                          style: AppFS.style(16),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Text(
-                room.createdAt?.formatDate ?? 'No Time',
-                style: AppFS.style(12),
-              ),
-            ],
-          ),
+      child: DecoratedBox(
+        decoration:  BoxDecoration(
+          border: selected ? Border(left:  BorderSide(color: AppColors.primary,width: 2)) : null
         ),
-      ),
+        child: ListTile(
+          contentPadding: const EdgeInsets.all( AppDimens.space16),
+          leading: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              networkImage ?? 'https://picsum.photos/500/500'),
+                          maxRadius: AppDimens.borderRadius30),
+          title: Text('${room.id}', style: context.md14.withWhite.height2,),
+
+          subtitle: Text("Last Message", style: context.sm12.withWhite.withOpacity(0.5),),
+          trailing: Text(room.createdAt!.formatDate),
+        ),
+      )
     );
   }
 }

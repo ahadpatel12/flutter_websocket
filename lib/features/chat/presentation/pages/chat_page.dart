@@ -3,9 +3,14 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_web/core/config/app_colors.dart';
+import 'package:flutter_web/core/extensions/text_style_extension.dart';
 import 'package:flutter_web/core/routes/app_route_keys.dart';
 import 'package:flutter_web/core/routes/navigation_service.dart';
 import 'package:flutter_web/core/utils/app_dimens.dart';
+import 'package:flutter_web/core/utils/app_size.dart';
+import 'package:flutter_web/core/widgets/app_icon_button.dart';
+import 'package:flutter_web/core/widgets/app_textform_field.dart';
 import 'package:flutter_web/features/chat/data/models/chat.dart';
 import 'package:flutter_web/features/chat/presentation/widgets/chat_bubble.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +27,8 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 // }
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+final String? roomId;
+  const ChatPage({super.key, this.roomId});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -46,9 +52,6 @@ class _ChatPageState extends State<ChatPage> {
       print(event);
       _addDataToList(event);
     });
-
-    // streamController.addStream(WebSocketChannel.connect(wsUrl).stream);
-    // streamController = WebSocketChannel.connect(wsUrl).stream;
   }
 
   @override
@@ -103,7 +106,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: AppColors.primary,
         title: Text('Flutter Web socket'),
         actions: [
           ElevatedButton(
@@ -114,26 +117,26 @@ class _ChatPageState extends State<ChatPage> {
               child: Icon(Icons.logout))
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(AppDimens.defaultPadding),
-        child: Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                decoration:
-                    InputDecoration(enabledBorder: OutlineInputBorder()),
-                controller: controller,
-                onFieldSubmitted: _onSendClicked,
-              ),
-            ),
-            IconButton(
-                onPressed: () => _onSendClicked(controller.text),
-                icon: Icon(Icons.send))
-          ],
-        ),
-      ),
+      // bottomNavigationBar: Padding(
+      //   padding: const EdgeInsets.all(AppDimens.defaultPadding),
+      //   child: Row(
+      //     children: [
+      //       Expanded(
+      //         child: TextFormField(
+      //           decoration:
+      //               InputDecoration(enabledBorder: OutlineInputBorder()),
+      //           controller: controller,
+      //           onFieldSubmitted: _onSendClicked,
+      //         ),
+      //       ),
+      //       IconButton(
+      //           onPressed: () => _onSendClicked(controller.text),
+      //           icon: Icon(Icons.send))
+      //     ],
+      //   ),
+      // ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: AppDimens.defaultPadding),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -151,7 +154,18 @@ class _ChatPageState extends State<ChatPage> {
                   );
                 },
               ),
-            )
+            ),
+            AppTextFormField(
+              controller: controller,
+              hint: "Write a message ...",
+              fillColor: AppColors.black.withOpacity(0.5),
+              filled: true,
+              suffixIcon: AppIconButton.send(
+                iconColor: AppColors.primary,
+                onPressed: () {
+                  _onSendClicked(controller.text);
+                },),
+            ),
           ],
         ),
       ),

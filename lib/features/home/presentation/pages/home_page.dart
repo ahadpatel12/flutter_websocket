@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_web/core/config/app_assets.dart';
+import 'package:flutter_web/core/config/app_colors.dart';
 import 'package:flutter_web/core/config/app_font_style.dart';
 import 'package:flutter_web/core/config/shim_db.dart';
+import 'package:flutter_web/core/extensions/text_style_extension.dart';
 import 'package:flutter_web/core/routes/app_route_keys.dart';
 import 'package:flutter_web/core/routes/navigation_service.dart';
 import 'package:flutter_web/core/utils/app_dimens.dart';
 import 'package:flutter_web/core/utils/app_snackbar.dart';
 import 'package:flutter_web/core/utils/common_functions.dart';
+import 'package:flutter_web/core/widgets/app_search_field.dart';
 import 'package:flutter_web/features/chat/data/models/chat.dart';
 import 'package:flutter_web/features/chat/data/models/room.dart';
+import 'package:flutter_web/features/chat/presentation/pages/chat_page.dart';
 import 'package:flutter_web/features/home/presentation/manager/room/room_bloc.dart';
 import 'package:flutter_web/features/home/presentation/widgets/room_list_item.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
@@ -21,14 +27,18 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ValueNotifier<String?> selectedRoom = ValueNotifier(null);
     var bloc = RoomBloc();
     return BlocProvider(
       create: (context) => bloc,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            'Flutter Web socket',
-            style: AppFS.defaultHeaderStyle,
+          leading: Image.asset(AppAssets.logo),
+          title: Text.rich(
+            TextSpan(children: [
+              TextSpan(text: 'Chit', style: context.lg16.withPrimary),
+              TextSpan(text: 'Chat', style: context.lg16.withSecondary),
+            ]),
           ),
           actions: [
             ElevatedButton(
@@ -53,18 +63,6 @@ class HomePage extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () async {
                 bloc.add(const CreateRoomEvent());
-
-                // var chat =
-                //     Chat(roomId: room.id!, message: "Testing", sentByMe: true);
-                // rooms.values.toList().first.chats.addAll([
-                //   chat,
-                //   chat.copyWith(sentByMe: false, message: "another Messgage")
-                // ]);
-                //
-                // rooms.values.toList().firstWhere((element) =>
-                //     element.id == '6f205880-9d49-1fd4-ba6b-ef9876fbee72');
-                // // rooms.values.toList().first.chats.add(chat);
-                // print(rooms.values);
               },
               child: Text('Start Chatting'),
             ),
@@ -81,23 +79,58 @@ class HomePage extends StatelessWidget {
             }
 
             if (state.responseState == ResponseState.success) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: state.rooms.length,
-                  itemBuilder: (context, index) {
-                    return RoomListItem(
-                        networkImage:
-                            'https://picsum.photos/500/${100 * index}/',
-                        onTap: () {
-                          context.goNamed(AppRoutes.chat, queryParameters: {
-                            "roomId": state.rooms[index].id
-                          });
-                        },
-                        room: state.rooms[index]);
-                  },
-                ),
+              return Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.chatBackground
+                        ),
+                        padding: const EdgeInsets.all(AppDimens.defaultPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('All Messages', style: context.xl18,),
+                          Gap(AppDimens.space16),
+                          const Padding(
+                            padding:  EdgeInsets.symmetric(horizontal:AppDimens.space16),
+                            child: AppSearchField(hint: 'Search',),
+                          ),
+                          ListView.separated(
+                            shrinkWrap: true,
+                            itemCount: state.rooms.length,
+                            separatorBuilder: (context, index) => const Divider(color: AppColors.grey78,height: 0,),
+                            itemBuilder: (context, index) {
+                              return ValueListenableBuilder(
+                                valueListenable: selectedRoom,
+                                builder: (context, selectedRoomValue, child) {
+                                  return RoomListItem(
+                                    selected: selectedRoomValue == state.rooms[index].id,
+                                      networkImage:
+                                          'https://picsum.photos/500/${100 * index}/',
+                                      onTap: () {
+                                        selectedRoom.value = state.rooms[index].id;
+                                        // context.goNamed(AppRoutes.chat, queryParameters: {
+                                        //   "roomId": state.rooms[index].id
+                                        // });
+                                      },
+                                      room: state.rooms[index]);
+                                }
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(child: ValueListenableBuilder(
+                    valueListenable: selectedRoom,
+                    builder: (context, selectedRoomValue, child) {
+                      return ChatPage(roomId: selectedRoomValue,);
+                    }
+                  ))
+
+                ],
               );
             }
 

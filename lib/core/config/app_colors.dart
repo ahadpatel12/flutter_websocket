@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const Color primary = Colors.amber;
+  static const Color secondary = Color(0XFF4BDAB4);
   static const Color error = Colors.red;
   static const Color fontColor = Colors.black;
   static const Color white = Colors.white;
   static const Color black = Colors.black;
   static const Color yellow = Colors.yellow;
   static const Color scaffoldBackground = Color(0xFF1B1E21);
+  static const Color chatBackground = Color(0xFF202527);
   static const Color grey78 = Color(0xFF787878);
   static const Color greyD9 = Color(0xFFD9D9D9);
+  static const Color transparent = Colors.transparent;
 
   /// Primary material color of the app
   static MaterialColor primaryMaterialCo =

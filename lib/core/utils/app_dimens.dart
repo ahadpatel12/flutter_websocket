@@ -35,6 +35,7 @@ class AppDimens {
   static const double imageSize75 = 75.0;
   static const double imageSize80 = 80.0;
 
+  static const double borderRadius5 = 5;
   static const double borderRadius10 = 10;
   static const double borderRadius15 = 15;
   static const double borderRadius20 = 20;
