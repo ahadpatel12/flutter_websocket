@@ -24,7 +24,7 @@ class ChatBubble extends StatelessWidget {
             if (!chat.sentByMe) ...[
               CircleAvatar(
                 maxRadius: AppDimens.borderRadius15,
-                backgroundColor: AppColors.primary.withOpacity(0.2),
+                backgroundColor: AppColors.primary.withOpacity(0.5),
                 child: const Icon(Icons.person),
               ),
               const Gap(3),
@@ -43,7 +43,7 @@ class ChatBubble extends StatelessWidget {
                       bottomLeft: const Radius.circular(AppDimens.borderRadius20),
                       bottomRight: const Radius.circular(AppDimens.borderRadius20),
                     ),
-                    color: (chat.sentByMe ? AppColors.black.withOpacity(0.5):AppColors.primary.withOpacity(0.5)  ),
+                    color: (chat.sentByMe ? AppColors.black.withOpacity(0.5):AppColors.primary  ),
                   ),
                   padding: const EdgeInsets.all(AppDimens.defaultPadding),
                   child: Text(chat.message),

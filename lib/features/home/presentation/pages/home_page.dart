@@ -92,6 +92,8 @@ class HomePage extends StatelessWidget {
                         children: [
                           Text('All Messages', style: context.xl18,),
                           Gap(AppDimens.space16),
+
+                          Gap(AppDimens.space16),
                           const Padding(
                             padding:  EdgeInsets.symmetric(horizontal:AppDimens.space16),
                             child: AppSearchField(hint: 'Search',),

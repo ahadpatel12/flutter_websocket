@@ -13,6 +13,7 @@ import 'package:flutter_web/core/widgets/app_icon_button.dart';
 import 'package:flutter_web/core/widgets/app_textform_field.dart';
 import 'package:flutter_web/features/chat/data/models/chat.dart';
 import 'package:flutter_web/features/chat/presentation/widgets/chat_bubble.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -91,7 +92,6 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _addDataToList(String event) {
-    // if (snapshot.hasData) {
     try {
       messages.value.add(Chat.fromJson(event));
       messages.value.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
@@ -99,22 +99,45 @@ class _ChatPageState extends State<ChatPage> {
     } catch (e) {
       print(e);
     }
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        title: Text('Flutter Web socket'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(AppDimens.defaultBorderRadius))
+        ),
+        backgroundColor: AppColors.black.withOpacity(0.5),
+        toolbarHeight: context.h(75),
+        title:
+
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppDimens.borderRadius40),
+            border: Border.all(color: AppColors.grey78)
+          ),
+          padding: EdgeInsets.all( AppDimens.space5),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+            CircleAvatar(
+                  backgroundImage: NetworkImage('https://picsum.photos/500/500'),
+                  maxRadius: AppDimens.borderRadius20,
+                ),
+              Gap(AppDimens.space5),
+              Text(widget.roomId??'', style: context.sm12.withGreyD9,),
+              Gap(AppDimens.space16),
+            ],
+          ),
+        ),
         actions: [
-          ElevatedButton(
-              onPressed: () {
-                NavigationService()
-                    .pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
-              },
-              child: Icon(Icons.logout))
+          // ElevatedButton(
+          //     onPressed: () {
+          //       NavigationService()
+          //           .pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+          //     },
+          //     child: Icon(Icons.logout))
         ],
       ),
       // bottomNavigationBar: Padding(

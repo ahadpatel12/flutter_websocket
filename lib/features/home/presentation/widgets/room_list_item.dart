@@ -20,7 +20,7 @@ class RoomListItem extends StatelessWidget {
       onTap: onTap,
       child: DecoratedBox(
         decoration:  BoxDecoration(
-          border: selected ? Border(left:  BorderSide(color: AppColors.primary,width: 2)) : null
+          border: selected ? const Border(left:  BorderSide(color: AppColors.primary,width: 2)) : null
         ),
         child: ListTile(
           contentPadding: const EdgeInsets.all( AppDimens.space16),
@@ -32,6 +32,7 @@ class RoomListItem extends StatelessWidget {
 
           subtitle: Text("Last Message", style: context.sm12.withWhite.withOpacity(0.5),),
           trailing: Text(room.createdAt!.formatDate),
+
         ),
       )
     );
