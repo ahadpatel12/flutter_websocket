@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_web/core/config/shim_db.dart';
 import 'package:flutter_web/core/routes/route_utils.dart';
 import 'package:flutter_web/core/user/user.dart';
+import 'package:flutter_web/core/utils/app_theme.dart';
 import 'package:flutter_web/service_locator.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
@@ -24,12 +25,9 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       ensureScreenSize: true,
       child: MaterialApp.router(
-        title: 'Flutter Demo',
+        title: 'Flutter web socket',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
+        theme: AppThemeData.theme,
         routerConfig: RouteUtils().goRouter,
       ),
     );

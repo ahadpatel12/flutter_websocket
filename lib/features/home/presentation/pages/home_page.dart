@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_web/core/config/app_font_style.dart';
 import 'package:flutter_web/core/config/shim_db.dart';
 import 'package:flutter_web/core/routes/app_route_keys.dart';
 import 'package:flutter_web/core/routes/navigation_service.dart';
@@ -25,8 +26,10 @@ class HomePage extends StatelessWidget {
       create: (context) => bloc,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text('Flutter Web socket'),
+          title: Text(
+            'Flutter Web socket',
+            style: AppFS.defaultHeaderStyle,
+          ),
           actions: [
             ElevatedButton(
                 onPressed: () {
@@ -81,6 +84,7 @@ class HomePage extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListView.builder(
+                  shrinkWrap: true,
                   itemCount: state.rooms.length,
                   itemBuilder: (context, index) {
                     return RoomListItem(
