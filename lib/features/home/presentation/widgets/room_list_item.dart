@@ -39,7 +39,7 @@ class RoomListItem extends StatelessWidget {
               style: context.md14.withWhite.height2,
             ),
             subtitle: Text(
-              "Last Message",
+              room.chats.lastOrNull?.message ?? '',
               style: context.sm12.withWhite.withOpacity(0.5),
             ),
             trailing: Text(room.createdAt!.formatDate),

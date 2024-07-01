@@ -74,6 +74,7 @@ class HomePage extends StatelessWidget {
                   children: [
                     Text('${state.message}'),
                     BlocListener<RoomBloc, RoomState>(
+                      bloc: bloc,
                       listener: (context, state) {
                         if (state.responseState == ResponseState.created) {
                           AppSnackBars.showSnackBar(
@@ -127,6 +128,7 @@ class HomePage extends StatelessWidget {
                                         ),
                                       ),
                                       BlocListener<RoomBloc, RoomState>(
+                                        bloc: bloc,
                                         listener: (context, state) {
                                           if (state.responseState ==
                                               ResponseState.created) {

@@ -44,7 +44,7 @@ class RoomBloc extends Bloc<RoomEvent, RoomState> {
 
       emit.call(state.copyWith(
           responseState: ResponseState.created,
-          rooms: rooms.values.toList(),
+          rooms: [...rooms.values],
           createdRoom: room));
     } catch (e) {
       emit.call(state.copyWith(

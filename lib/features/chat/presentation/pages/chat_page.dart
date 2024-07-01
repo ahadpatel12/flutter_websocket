@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_web/common_libs.dart';
@@ -38,10 +39,12 @@ class _ChatPageState extends State<ChatPage> {
     channel.stream.listen((event) {
       print("event from stream $event");
       try {
+        json.decode(event);
+        jsonDecode(event);
         var chat = Chat.fromJson(event);
         chatBloc.add(AddMessageEvent(chat: chat));
       } catch (e) {
-        print(e);
+        print("Invalid json format $e");
       }
     });
   }
@@ -68,6 +71,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void _onSendClicked(String value) {
     print("on Send clicked");
+    if (value.trim().isEmpty) return;
     var sendMessage = Chat(
         id: const Uuid().v1(),
         roomId: roomId ?? '',
@@ -86,6 +90,7 @@ class _ChatPageState extends State<ChatPage> {
     Future.delayed(const Duration(milliseconds: 100));
 
     channel.sink.add(receiveMessage.toJson());
+    controller.clear();
     // chatBloc.add(SendMessageEvent(message: receiveMessage));
   }
 

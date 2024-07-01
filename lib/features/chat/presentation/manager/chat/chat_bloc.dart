@@ -31,16 +31,28 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> sendMessage(
       AddMessageEvent event, Emitter<ChatState> emit) async {
-    state.room?.chats.add(event.chat);
-    state.room?.chats.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+    try {
+      // List<Chat> chats = <Chat>[]..addAll(state.room?.chats ?? []);
+      print("before ${state.room?.chats}");
+      List<Chat> chats =
+          state.room?.chats.map((e) => Chat.fromJson(e.toJson())).toList() ??
+              [];
+      chats.add(event.chat);
+      if (chats.length > 1) {
+        chats.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+      }
 
-    state.room?.save();
-    var room = state.room;
-    print("messages updated ${event.chat.message}");
+      await state.room?.save();
+      var room = state.room;
+      print("messages updated ${event.chat.message}");
+      print("All chats $chats");
 
-    emit.call(state.copyWith(
-        responseState: ResponseState.success,
-        chatList: [...state.room!.chats],
-        room: room));
+      emit.call(state.copyWith(
+          responseState: ResponseState.success,
+          chatList: [...chats],
+          room: room));
+    } catch (e) {
+      print("error on adding message $e");
+    }
   }
 }
