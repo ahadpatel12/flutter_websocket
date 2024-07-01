@@ -50,7 +50,7 @@ class AppDimens {
   static const circleRadius35 = 35;
 
   static const double inputFieldHeight = 42;
-  static const double buttonHeight = 40;
+  static const double defaultButtonHeight = 40;
 
   static double mainTextShimmerRadius = 3;
   static double productRatingShimmerRadius = 5;

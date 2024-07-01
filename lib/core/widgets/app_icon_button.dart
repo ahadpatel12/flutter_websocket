@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web/core/config/app_colors.dart';
-import 'package:flutter_web/core/utils/app_dimens.dart';
+import 'package:flutter_web/core/config/app_dimens.dart';
 
 class AppIconButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -55,7 +55,6 @@ class AppIconButton extends StatelessWidget {
         onPressed: onPressed,
       ); */
 
-
   // factory AppIconButton.back({
   //   VoidCallback? onPressed,
   //   Color? iconColor,
@@ -73,7 +72,6 @@ class AppIconButton extends StatelessWidget {
   //       constraints: constraints,
   //       onPressed: onPressed ?? () => NavigationService().pop(),
   //     );
-
 
   factory AppIconButton.text(
           {required String text,
@@ -107,8 +105,7 @@ class AppIconButton extends StatelessWidget {
       constraints: constraints,
       style: IconButton.styleFrom(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimens.borderRadius10)
-        ),
+            borderRadius: BorderRadius.circular(AppDimens.borderRadius10)),
         tapTargetSize: shrinkButton
             ? MaterialTapTargetSize.shrinkWrap
             : MaterialTapTargetSize.padded,

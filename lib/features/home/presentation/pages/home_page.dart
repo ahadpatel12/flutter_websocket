@@ -7,7 +7,7 @@ import 'package:flutter_web/core/config/shim_db.dart';
 import 'package:flutter_web/core/extensions/text_style_extension.dart';
 import 'package:flutter_web/core/routes/app_route_keys.dart';
 import 'package:flutter_web/core/routes/navigation_service.dart';
-import 'package:flutter_web/core/utils/app_dimens.dart';
+import 'package:flutter_web/core/config/app_dimens.dart';
 import 'package:flutter_web/core/utils/app_size.dart';
 import 'package:flutter_web/core/utils/app_snackbar.dart';
 import 'package:flutter_web/core/utils/common_functions.dart';
@@ -43,136 +43,170 @@ class HomePage extends StatelessWidget {
             ]),
           ),
           actions: [
-            ElevatedButton(
-                onPressed: () {
-                  NavigationService().pushNamedAndRemoveUntil(
-                      AppRoutes.login, (route) => false);
-                },
-                child: Icon(Icons.logout))
+            AppButton(
+              buttonType: ButtonType.outLineWithIcon,
+              icon: Icon(Icons.logout),
+              iconAlignment: IconAlignment.end,
+              buttonName: "Logout",
+              onTap: () {
+                NavigationService()
+                    .pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+              },
+            ),
+            Gap(AppDimens.space5),
+            AppButton(
+              buttonType: ButtonType.elevated,
+              buttonName: "Delete All rooms",
+              onTap: () {
+                AppLocalDB.roomBox.clear();
+              },
+            ),
           ],
         ),
-        // bottomNavigationBar: BlocListener<RoomBloc, RoomState>(
-        //   listener: (context, state) {
-        //     if (state.responseState == ResponseState.created) {
-        //       AppSnackBars.showSnackBar(
-        //           alertType: AlertType.success, message: "New Room Created");
-        //       context.goNamed(AppRoutes.chat,
-        //           queryParameters: {"roomId": state.createdRoom!.id});
-        //     }
-        //   },
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(AppDimens.space10),
-        //     child: ElevatedButton(
-        //       onPressed: () async {
-        //         bloc.add(const CreateRoomEvent());
-        //       },
-        //       child: Text('Start Chatting'),
-        //     ),
-        //   ),
-        // ),
         body: BlocBuilder<RoomBloc, RoomState>(
           bloc: bloc..add(GetAllRoomsEvent()),
-          // listener: (context, state) {
-          //   // TODO: implement listener
-          // },
           builder: (ctx, state) {
             print(context.isPC);
             if (state.responseState == ResponseState.failure) {
-              return Center(child: Text('Error: ${state.message}'));
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('${state.message}'),
+                    BlocListener<RoomBloc, RoomState>(
+                      listener: (context, state) {
+                        if (state.responseState == ResponseState.created) {
+                          AppSnackBars.showSnackBar(
+                              alertType: AlertType.success,
+                              message: "New Room Created");
+                          context.goNamed(AppRoutes.chat, queryParameters: {
+                            "roomId": state.createdRoom!.id
+                          });
+                        }
+                      },
+                      child: AppButton(
+                        buttonType: ButtonType.outline,
+                        onTap: () async {
+                          bloc.add(const CreateRoomEvent());
+                        },
+                        buttonName: 'Start New Chat',
+                      ),
+                    ),
+                  ],
+                ),
+              );
             }
 
             if (state.responseState == ResponseState.success) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 500),
-                    child: Card(
-                    color: AppColors.chatBackground,
-                        // decoration: BoxDecoration(
-                        // ),
-
+                  // Spacer(),
+                  Flexible(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 500),
+                      child: Card(
+                        color: AppColors.chatBackground,
                         margin: const EdgeInsets.all(AppDimens.defaultPadding),
-                        // padding: const EdgeInsets.all(AppDimens.defaultPadding),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('All Messages', style: context.xl18,),
-                              BlocListener<RoomBloc, RoomState>(
-                                listener: (context, state) {
-                                  if (state.responseState == ResponseState.created) {
-                                    AppSnackBars.showSnackBar(
-                                        alertType: AlertType.success, message: "New Room Created");
-                                    context.goNamed(AppRoutes.chat,
-                                        queryParameters: {"roomId": state.createdRoom!.id});
-                                  }
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(AppDimens.space10),
-                                  child: AppButton(
-                                    buttonType: ButtonType.outline,
-                                    onTap: () async {
-                                      bloc.add(const CreateRoomEvent());
-                                    },
-                                    buttonName: 'Start New Chat',
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(AppDimens.space16),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          'All Messages',
+                                          style: context.xl18,
+                                        ),
+                                      ),
+                                      BlocListener<RoomBloc, RoomState>(
+                                        listener: (context, state) {
+                                          if (state.responseState ==
+                                              ResponseState.created) {
+                                            AppSnackBars.showSnackBar(
+                                                alertType: AlertType.success,
+                                                message: "New Room Created");
+                                            context.goNamed(AppRoutes.chat,
+                                                queryParameters: {
+                                                  "roomId":
+                                                      state.createdRoom!.id
+                                                });
+                                          }
+                                        },
+                                        child: AppButton(
+                                          buttonType: ButtonType.outline,
+                                          onTap: () async {
+                                            bloc.add(const CreateRoomEvent());
+                                          },
+                                          buttonName: 'Start New Chat',
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
+                                  Gap(AppDimens.space16),
+                                  AppSearchField(
+                                    hint: 'Search',
+                                  ),
+                                  Gap(AppDimens.space16),
+                                ],
                               ),
-                            ],
-                          ),
-                          Gap(AppDimens.space16),
-
-                          const Padding(
-                            padding:  EdgeInsets.symmetric(horizontal:AppDimens.space16),
-                            child: AppSearchField(hint: 'Search',),
-                          ),
-                          Gap(AppDimens.space16),
-
-                          Expanded(
-                            child: SingleChildScrollView(
+                            ),
+                            Expanded(
                               child: ListView.separated(
                                 shrinkWrap: true,
                                 itemCount: state.rooms.length,
-                                separatorBuilder: (context, index) => const Divider(color: AppColors.grey78,height: 0,),
+                                separatorBuilder: (context, index) =>
+                                    const Divider(
+                                  color: AppColors.grey78,
+                                  height: 0,
+                                ),
                                 itemBuilder: (context, index) {
                                   return ValueListenableBuilder(
-                                    valueListenable: selectedRoom,
-                                    builder: (context, selectedRoomValue, child) {
-                                      return RoomListItem(
-                                        selected: selectedRoomValue == state.rooms[index].id,
-                                          networkImage:
-                                              'https://picsum.photos/500/${100 * index}/',
-                                          onTap: () {
-                                            selectedRoom.value = state.rooms[index].id;
-                                            // context.goNamed(AppRoutes.chat, queryParameters: {
-                                            //   "roomId": state.rooms[index].id
-                                            // });
-                                          },
-                                          room: state.rooms[index]);
-                                    }
-                                  );
+                                      valueListenable: selectedRoom,
+                                      builder:
+                                          (context, selectedRoomValue, child) {
+                                        return RoomListItem(
+                                            selected: selectedRoomValue ==
+                                                state.rooms[index].id,
+                                            networkImage:
+                                                'https://picsum.photos/500/${100 * index}/',
+                                            onTap: () {
+                                              selectedRoom.value =
+                                                  state.rooms[index].id;
+                                              if (!context.isPC)
+                                                context.goNamed(AppRoutes.chat,
+                                                    queryParameters: {
+                                                      "roomId":
+                                                          state.rooms[index].id
+                                                    });
+                                            },
+                                            room: state.rooms[index]);
+                                      });
                                 },
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  if(context.isPC)
-                  Expanded(
-                      flex: 3,
-                      child: ValueListenableBuilder(
-                    valueListenable: selectedRoom,
-                    builder: (context, selectedRoomValue, child) {
-                      return ChatPage(roomId: selectedRoomValue,);
-                    }
-                  ))
-
+                  if (context.isPC)
+                    Expanded(
+                        flex: 3,
+                        child: ValueListenableBuilder(
+                            valueListenable: selectedRoom,
+                            builder: (context, selectedRoomValue, child) {
+                              return ChatPage(
+                                roomId: selectedRoomValue,
+                              );
+                            }))
                 ],
               );
             }

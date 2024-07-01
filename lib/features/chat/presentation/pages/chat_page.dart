@@ -1,47 +1,33 @@
 import 'dart:async';
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_web/core/config/app_colors.dart';
-import 'package:flutter_web/core/extensions/text_style_extension.dart';
-import 'package:flutter_web/core/routes/app_route_keys.dart';
-import 'package:flutter_web/core/routes/navigation_service.dart';
-import 'package:flutter_web/core/utils/app_dimens.dart';
-import 'package:flutter_web/core/utils/app_size.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_web/common_libs.dart';
 import 'package:flutter_web/core/widgets/app_icon_button.dart';
-import 'package:flutter_web/core/widgets/app_textform_field.dart';
+import 'package:flutter_web/core/widgets/app_text_form_field.dart';
 import 'package:flutter_web/features/chat/data/models/chat.dart';
+import 'package:flutter_web/features/chat/presentation/manager/chat/chat_bloc.dart';
 import 'package:flutter_web/features/chat/presentation/widgets/chat_bubble.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-// class ChatPage extends StatelessWidget {
-//   const ChatPage({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Placeholder();
-//   }
-// }
-
 class ChatPage extends StatefulWidget {
-final String? roomId;
+  final String? roomId;
   const ChatPage({super.key, this.roomId});
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<ChatPage> createState() => _ChatPageState(roomId: roomId);
 }
 
 class _ChatPageState extends State<ChatPage> {
+  _ChatPageState({this.roomId});
   var controller = TextEditingController();
   late Uri wsUrl;
-
+  String? roomId;
+  late ChatBloc chatBloc;
   late WebSocketChannel channel;
 
-  ValueNotifier<List<Chat>> messages = ValueNotifier([]);
+  // ValueNotifier<List<Chat>> messages = ValueNotifier([]);
 
   Future<void> _init() async {
     print("Init called");
@@ -51,20 +37,22 @@ class _ChatPageState extends State<ChatPage> {
 
     channel.stream.listen((event) {
       print(event);
-      _addDataToList(event);
+      chatBloc.add(AddMessageEvent(message: event));
+      // _addDataToList(event);
     });
   }
 
   @override
   void initState() {
+    chatBloc = ChatBloc();
     _init();
-
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     print(GoRouterState.of(context).uri.queryParameters);
+    roomId ??= GoRouterState.of(context).uri.queryParameters['roomId'];
     super.didChangeDependencies();
   }
 
@@ -76,120 +64,157 @@ class _ChatPageState extends State<ChatPage> {
 
   void _onSendClicked(String value) {
     print("on Send clicked");
-    var params = GoRouterState.of(context).uri.queryParameters;
+    var sendMessage = Chat(
+        id: const Uuid().v1(),
+        roomId: roomId ?? '',
+        message: value,
+        sentByMe: true);
 
-    var chat =
-        Chat(roomId: params['RoomId'] ?? '', message: value, sentByMe: true);
+    channel.sink.add(sendMessage.toJson());
+    // chatBloc.add(SendMessageEvent(message: sendMessage));
 
-    channel.sink.add(chat.toJson());
-    var chat2 = chat.copyWith(
+    var receiveMessage = sendMessage.copyWith(
         id: const Uuid().v1(),
         sentByMe: false,
-        createdAt: DateTime.now().add(Duration(milliseconds: 100)));
-    print(chat.toJson());
-    print(chat2.toJson());
-    channel.sink.add(chat2.toJson());
+        createdAt: DateTime.now().add(const Duration(milliseconds: 100)));
+    // print(sendMessage.toJson());
+    // print(receiveMessage.toJson());
+    Future.delayed(const Duration(milliseconds: 100));
+
+    channel.sink.add(receiveMessage.toJson());
+    // chatBloc.add(SendMessageEvent(message: receiveMessage));
   }
 
-  void _addDataToList(String event) {
-    try {
-      messages.value.add(Chat.fromJson(event));
-      messages.value.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-      messages.notifyListeners();
-    } catch (e) {
-      print(e);
-    }
-  }
+  // void _addDataToList(String event) {
+  //   try {
+  //     messages.value.add(Chat.fromJson(event));
+  //     messages.value.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+  //     messages.notifyListeners();
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(AppDimens.defaultBorderRadius))
-        ),
-        backgroundColor: AppColors.black.withOpacity(0.5),
-        toolbarHeight: context.h(75),
-        title:
-
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppDimens.borderRadius40),
-            border: Border.all(color: AppColors.grey78)
-          ),
-          padding: EdgeInsets.all( AppDimens.space5),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-            CircleAvatar(
-                  backgroundImage: NetworkImage('https://picsum.photos/500/500'),
+    return BlocProvider(
+      create: (ctx) => chatBloc,
+      child: Scaffold(
+        appBar: AppBar(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(AppDimens.defaultBorderRadius))),
+          backgroundColor: AppColors.black.withOpacity(0.5),
+          toolbarHeight: context.h(75),
+          title: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppDimens.borderRadius40),
+                border: Border.all(color: AppColors.grey78)),
+            padding: EdgeInsets.all(AppDimens.space5),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircleAvatar(
+                  backgroundImage:
+                      NetworkImage('https://picsum.photos/500/500'),
                   maxRadius: AppDimens.borderRadius20,
                 ),
-              Gap(AppDimens.space5),
-              Text(widget.roomId??'', style: context.sm12.withGreyD9,),
-              Gap(AppDimens.space16),
+                Gap(AppDimens.space5),
+                Text(
+                  roomId ?? '',
+                  style: context.sm12.withGreyD9,
+                ),
+                Gap(AppDimens.space16),
+              ],
+            ),
+          ),
+          actions: [
+            // ElevatedButton(
+            //     onPressed: () {
+            //       NavigationService()
+            //           .pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+            //     },
+            //     child: Icon(Icons.logout))
+          ],
+        ),
+        // bottomNavigationBar: Padding(
+        //   padding: const EdgeInsets.all(AppDimens.defaultPadding),
+        //   child: Row(
+        //     children: [
+        //       Expanded(
+        //         child: TextFormField(
+        //           decoration:
+        //               InputDecoration(enabledBorder: OutlineInputBorder()),
+        //           controller: controller,
+        //           onFieldSubmitted: _onSendClicked,
+        //         ),
+        //       ),
+        //       IconButton(
+        //           onPressed: () => _onSendClicked(controller.text),
+        //           icon: Icon(Icons.send))
+        //     ],
+        //   ),
+        // ),
+        body: Padding(
+          padding:
+              const EdgeInsets.symmetric(horizontal: AppDimens.defaultPadding),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxWidth: context.isPC ? 500 : double.infinity),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppDimens.defaultPadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        BlocBuilder<ChatBloc, ChatState>(
+                          bloc: chatBloc
+                            ..add(GetAllChatsEvent(roomId: roomId!)),
+                          builder: (context, state) {
+                            if (state.responseState == ResponseState.loading) {
+                              return const CircularProgressIndicator();
+                            }
+                            if (state.responseState == ResponseState.success) {
+                              return Expanded(
+                                child: ListView.builder(
+                                  reverse: true,
+                                  shrinkWrap: true,
+                                  itemCount: state.chatList.length,
+                                  itemBuilder: (context, index) {
+                                    return ChatBubble(
+                                        chat: state.chatList[index]);
+                                  },
+                                ),
+                              );
+                            }
+                            return Center(
+                              child: Text('No previous messages'),
+                            );
+                          },
+                        ),
+                        AppTextFormField(
+                          controller: controller,
+                          hint: "Write a message ...",
+                          fillColor: AppColors.black.withOpacity(0.5),
+                          filled: true,
+                          suffixIcon: AppIconButton.send(
+                            iconColor: AppColors.primary,
+                            onPressed: () {
+                              _onSendClicked(controller.text);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
-        actions: [
-          // ElevatedButton(
-          //     onPressed: () {
-          //       NavigationService()
-          //           .pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
-          //     },
-          //     child: Icon(Icons.logout))
-        ],
-      ),
-      // bottomNavigationBar: Padding(
-      //   padding: const EdgeInsets.all(AppDimens.defaultPadding),
-      //   child: Row(
-      //     children: [
-      //       Expanded(
-      //         child: TextFormField(
-      //           decoration:
-      //               InputDecoration(enabledBorder: OutlineInputBorder()),
-      //           controller: controller,
-      //           onFieldSubmitted: _onSendClicked,
-      //         ),
-      //       ),
-      //       IconButton(
-      //           onPressed: () => _onSendClicked(controller.text),
-      //           icon: Icon(Icons.send))
-      //     ],
-      //   ),
-      // ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppDimens.defaultPadding),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: ValueListenableBuilder(
-                valueListenable: messages,
-                builder: (context, value, child) {
-                  return ListView.builder(
-                    reverse: true,
-                    shrinkWrap: true,
-                    itemCount: messages.value.length,
-                    itemBuilder: (context, index) {
-                      return ChatBubble(chat: messages.value[index]);
-                    },
-                  );
-                },
-              ),
-            ),
-            AppTextFormField(
-              controller: controller,
-              hint: "Write a message ...",
-              fillColor: AppColors.black.withOpacity(0.5),
-              filled: true,
-              suffixIcon: AppIconButton.send(
-                iconColor: AppColors.primary,
-                onPressed: () {
-                  _onSendClicked(controller.text);
-                },),
-            ),
-          ],
         ),
       ),
     );

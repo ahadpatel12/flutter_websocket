@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web/core/config/app_colors.dart';
 import 'package:flutter_web/core/extensions/text_style_extension.dart';
-import 'package:flutter_web/core/utils/app_dimens.dart';
+import 'package:flutter_web/core/config/app_dimens.dart';
 import 'package:flutter_web/core/utils/app_size.dart';
 
 class AppTextFormField extends StatelessWidget {
@@ -76,16 +76,15 @@ class AppTextFormField extends StatelessWidget {
     this.label,
     this.showCounter,
     this.contentPadding =
-    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     this.textCapitalization = TextCapitalization.none,
     this.isDense = false,
   });
 
   OutlineInputBorder get outlineInputBorder => OutlineInputBorder(
-    borderRadius: BorderRadius.circular(borderRadius),
-    borderSide: BorderSide(
-        color: borderColor ?? AppColors.transparent),
-  );
+        borderRadius: BorderRadius.circular(borderRadius),
+        borderSide: BorderSide(color: borderColor ?? AppColors.transparent),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +98,7 @@ class AppTextFormField extends StatelessWidget {
             style: context.md14.withBlack.weigh500.height1_9,
           ),
         TextFormField(
-          style: fontTextStyle ??context.md14,
+          style: fontTextStyle ?? context.md14,
           enabled: enable,
           keyboardType: keyboardType,
           onFieldSubmitted: onSubmit,
@@ -128,24 +127,13 @@ class AppTextFormField extends StatelessWidget {
             hintText: hint,
             hintStyle: hintTextStyle ?? context.md14.withGrey78,
             filled: filled,
-            disabledBorder: showBorder
-                ? outlineInputBorder
-                : InputBorder.none,
-            focusedErrorBorder: showBorder
-                ? outlineInputBorder
-                : InputBorder.none,
-            enabledBorder: showBorder
-                ? outlineInputBorder
-                : InputBorder.none,
-            border: showBorder
-                ? outlineInputBorder
-                : InputBorder.none,
-            errorBorder: showBorder
-                ? outlineInputBorder
-                : InputBorder.none,
-            focusedBorder: showBorder
-                ? outlineInputBorder
-                : InputBorder.none,
+            disabledBorder: showBorder ? outlineInputBorder : InputBorder.none,
+            focusedErrorBorder:
+                showBorder ? outlineInputBorder : InputBorder.none,
+            enabledBorder: showBorder ? outlineInputBorder : InputBorder.none,
+            border: showBorder ? outlineInputBorder : InputBorder.none,
+            errorBorder: showBorder ? outlineInputBorder : InputBorder.none,
+            focusedBorder: showBorder ? outlineInputBorder : InputBorder.none,
             fillColor: fillColor,
             // counterText: '',
           ),

@@ -8,6 +8,7 @@ class AppColors {
   static const Color white = Colors.white;
   static const Color black = Colors.black;
   static const Color yellow = Colors.yellow;
+  static const Color brown = Colors.brown;
   static const Color scaffoldBackground = Color(0xFF1B1E21);
   static const Color chatBackground = Color(0xFF202527);
   static const Color grey78 = Color(0xFF787878);

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_web/core/config/app_assets.dart';
 import 'package:flutter_web/core/config/app_colors.dart';
 import 'package:flutter_web/core/extensions/text_style_extension.dart';
-import 'package:flutter_web/core/utils/app_dimens.dart';
+import 'package:flutter_web/core/config/app_dimens.dart';
 import 'package:flutter_web/core/utils/app_size.dart';
-import 'package:flutter_web/core/widgets/app_textform_field.dart';
+import 'package:flutter_web/core/widgets/app_text_form_field.dart';
 
 class AppSearchField extends StatelessWidget {
   final String hint;

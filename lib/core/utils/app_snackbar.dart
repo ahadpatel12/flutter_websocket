@@ -3,7 +3,7 @@ library app_snack_bars;
 import 'package:flutter/material.dart';
 import 'package:flutter_web/core/config/app_colors.dart';
 import 'package:flutter_web/core/routes/navigation_service.dart';
-import 'package:flutter_web/core/utils/app_dimens.dart';
+import 'package:flutter_web/core/config/app_dimens.dart';
 import 'package:gap/gap.dart';
 
 enum AlertType { info, success, warning, error }
