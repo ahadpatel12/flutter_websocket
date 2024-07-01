@@ -29,4 +29,23 @@ class ChatState extends Equatable {
       message: message,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      super == other &&
+          other is ChatState &&
+          runtimeType == other.runtimeType &&
+          responseState == other.responseState &&
+          room == other.room &&
+          chatList == other.chatList &&
+          message == other.message;
+
+  @override
+  int get hashCode =>
+      super.hashCode ^
+      responseState.hashCode ^
+      room.hashCode ^
+      chatList.hashCode ^
+      message.hashCode;
 }

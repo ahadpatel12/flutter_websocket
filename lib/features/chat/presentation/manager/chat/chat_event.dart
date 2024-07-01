@@ -13,9 +13,9 @@ class GetAllChatsEvent extends ChatEvent {
 }
 
 class AddMessageEvent extends ChatEvent {
-  final Chat message;
+  final Chat chat;
 
-  const AddMessageEvent({required this.message});
+  const AddMessageEvent({required this.chat});
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [chat];
 }

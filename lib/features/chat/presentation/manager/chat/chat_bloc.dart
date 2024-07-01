@@ -19,11 +19,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> getAllChats(
       GetAllChatsEvent event, Emitter<ChatState> emit) async {
-    emit(state.copyWith(responseState: ResponseState.loading));
+    emit.call(state.copyWith(responseState: ResponseState.loading));
 
     var roomList = await AppLocalDB().getRoomList;
     var room = roomList.get(event.roomId);
-    emit(state.copyWith(
+    emit.call(state.copyWith(
         responseState: ResponseState.success,
         room: room,
         chatList: room?.chats));
@@ -31,16 +31,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> sendMessage(
       AddMessageEvent event, Emitter<ChatState> emit) async {
-    // var room = await AppLocalDB().getRoom(event.message.roomId);
-    var roomList = await AppLocalDB().getRoomList;
+    state.room?.chats.add(event.chat);
+    state.room?.chats.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
 
-    var room = roomList.get(event.message.roomId);
-    // room.chats.add(value)
-    print("room json ${room?.toJson()}");
-    // print("room keys list ${roomList.keys.toList()}");
-    room?.chats.add(event.message);
-    room?.save();
+    state.room?.save();
+    var room = state.room;
+    print("messages updated ${event.chat.message}");
 
-    print("chat list ${room?.chats.map((e) => e.toJson())}");
+    emit.call(state.copyWith(
+        responseState: ResponseState.success,
+        chatList: [...state.room!.chats],
+        room: room));
   }
 }

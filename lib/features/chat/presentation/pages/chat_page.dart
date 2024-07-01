@@ -36,9 +36,13 @@ class _ChatPageState extends State<ChatPage> {
     await channel.ready;
 
     channel.stream.listen((event) {
-      print(event);
-      chatBloc.add(AddMessageEvent(message: event));
-      // _addDataToList(event);
+      print("event from stream $event");
+      try {
+        var chat = Chat.fromJson(event);
+        chatBloc.add(AddMessageEvent(chat: chat));
+      } catch (e) {
+        print(e);
+      }
     });
   }
 
@@ -137,24 +141,6 @@ class _ChatPageState extends State<ChatPage> {
             //     child: Icon(Icons.logout))
           ],
         ),
-        // bottomNavigationBar: Padding(
-        //   padding: const EdgeInsets.all(AppDimens.defaultPadding),
-        //   child: Row(
-        //     children: [
-        //       Expanded(
-        //         child: TextFormField(
-        //           decoration:
-        //               InputDecoration(enabledBorder: OutlineInputBorder()),
-        //           controller: controller,
-        //           onFieldSubmitted: _onSendClicked,
-        //         ),
-        //       ),
-        //       IconButton(
-        //           onPressed: () => _onSendClicked(controller.text),
-        //           icon: Icon(Icons.send))
-        //     ],
-        //   ),
-        // ),
         body: Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: AppDimens.defaultPadding),
@@ -191,7 +177,7 @@ class _ChatPageState extends State<ChatPage> {
                                 ),
                               );
                             }
-                            return Center(
+                            return const Center(
                               child: Text('No previous messages'),
                             );
                           },
@@ -201,6 +187,9 @@ class _ChatPageState extends State<ChatPage> {
                           hint: "Write a message ...",
                           fillColor: AppColors.black.withOpacity(0.5),
                           filled: true,
+                          onSubmit: (value) {
+                            _onSendClicked(controller.text);
+                          },
                           suffixIcon: AppIconButton.send(
                             iconColor: AppColors.primary,
                             onPressed: () {
