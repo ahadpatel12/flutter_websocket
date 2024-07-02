@@ -32,24 +32,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> sendMessage(
       AddMessageEvent event, Emitter<ChatState> emit) async {
     try {
-      // List<Chat> chats = <Chat>[]..addAll(state.room?.chats ?? []);
-      print("before ${state.room?.chats}");
-      List<Chat> chats =
-          state.room?.chats.map((e) => Chat.fromJson(e.toJson())).toList() ??
-              [];
-      chats.add(event.chat);
-      if (chats.length > 1) {
-        chats.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+      var roomList = await AppLocalDB().getRoomList;
+      var room = roomList.get(event.chat.roomId);
+
+      room?.chats.add(event.chat);
+      if (room!.chats.length > 1) {
+        room.chats.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
       }
 
-      await state.room?.save();
-      var room = state.room;
-      print("messages updated ${event.chat.message}");
-      print("All chats $chats");
+      room.save();
+
+      // print("messages updated ${event.chat.message}");
+      // print("All chats ${room.chats}");
 
       emit.call(state.copyWith(
           responseState: ResponseState.success,
-          chatList: [...chats],
+          chatList: [...room.chats],
           room: room));
     } catch (e) {
       print("error on adding message $e");

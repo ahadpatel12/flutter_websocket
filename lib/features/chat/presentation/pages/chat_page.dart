@@ -174,10 +174,10 @@ class _ChatPageState extends State<ChatPage> {
                                 child: ListView.builder(
                                   reverse: true,
                                   shrinkWrap: true,
-                                  itemCount: state.chatList.length,
+                                  itemCount: state.room!.chats.length,
                                   itemBuilder: (context, index) {
                                     return ChatBubble(
-                                        chat: state.chatList[index]);
+                                        chat: state.room!.chats[index]);
                                   },
                                 ),
                               );
