@@ -55,14 +55,14 @@ class HomePage extends StatelessWidget {
                     .pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
               },
             ),
-            Gap(AppDimens.space5),
-            AppButton(
-              buttonType: ButtonType.elevated,
-              buttonName: "Delete All rooms",
-              onTap: () {
-                AppLocalDB.roomBox.clear();
-              },
-            ),
+            // Gap(AppDimens.space5),
+            // AppButton(
+            //   buttonType: ButtonType.elevated,
+            //   buttonName: "Delete All rooms",
+            //   onTap: () {
+            //     AppLocalDB.roomBox.clear();
+            //   },
+            // ),
           ],
         ),
         body: BlocBuilder<RoomBloc, RoomState>(
@@ -105,10 +105,10 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Spacer(),
-                  ConstrainedBox(
-                    constraints:
-                        BoxConstraints(maxWidth: AppDimens.defaultMaxWidth),
-                    child: Flexible(
+                  Flexible(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                          maxWidth: AppDimens.defaultMaxWidth),
                       child: Card(
                         color: AppColors.chatBackground,
                         margin: const EdgeInsets.all(AppDimens.defaultPadding),
@@ -155,12 +155,12 @@ class HomePage extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  Gap(AppDimens.space16),
-                                  AppSearchField(
-                                    hint: 'Search',
-                                    onChange: (value) {},
-                                  ),
-                                  Gap(AppDimens.space16),
+                                  // Gap(AppDimens.space16),
+                                  // AppSearchField(
+                                  //   hint: 'Search',
+                                  //   onChange: (value) {},
+                                  // ),
+                                  const Gap(AppDimens.space16),
                                 ],
                               ),
                             ),
