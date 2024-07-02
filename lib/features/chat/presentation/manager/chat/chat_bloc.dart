@@ -34,16 +34,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       var roomList = await AppLocalDB().getRoomList;
       var room = roomList.get(event.chat.roomId);
-
-      room?.chats.add(event.chat);
-      if (room!.chats.length > 1) {
+      // var chatList = [...room!.chats, event.chat];
+      room!.chats = [...room.chats, event.chat];
+      // room.chats.addAll(chatList);
+      if (room.chats.length > 1) {
         room.chats.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
       }
 
       room.save();
 
-      // print("messages updated ${event.chat.message}");
-      // print("All chats ${room.chats}");
+      print("messages updated ${event.chat.message}");
+      print("All chats ${room.chats}");
 
       emit.call(state.copyWith(
           responseState: ResponseState.success,
