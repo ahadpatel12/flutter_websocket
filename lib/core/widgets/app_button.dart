@@ -7,8 +7,10 @@ import 'package:flutter_web/core/utils/app_size.dart';
 enum ButtonType {
   elevated,
   outline,
-  elvatedWithIcon,
+  text,
+  elevatedWithIcon,
   outLineWithIcon,
+  textWithIcon,
 }
 
 class AppButton extends StatelessWidget {
@@ -85,7 +87,7 @@ class AppButton extends StatelessWidget {
           onPressed: onTap,
           child: child,
         ),
-      ButtonType.elvatedWithIcon => ElevatedButton.icon(
+      ButtonType.elevatedWithIcon => ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
               disabledBackgroundColor: buttonColor,
               elevation: 0,
@@ -122,6 +124,34 @@ class AppButton extends StatelessWidget {
           iconAlignment: iconAlignment,
           label: child,
         ),
+      // TODO: Handle this case.
+      ButtonType.text => TextButton(
+          style: TextButton.styleFrom(
+              shape: ContinuousRectangleBorder(
+                borderRadius: borderRadius ?? BorderRadius.circular(20),
+              ),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: VisualDensity.compact),
+          onPressed: onTap,
+          child: child,
+        ),
+      // TODO: Handle this case.
+      ButtonType.textWithIcon => TextButton.icon(
+          style: TextButton.styleFrom(
+              disabledBackgroundColor: buttonColor,
+              elevation: 0,
+              visualDensity: VisualDensity.compact,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              // padding: padding,
+              shape: ContinuousRectangleBorder(
+                borderRadius: borderRadius ?? BorderRadius.circular(20),
+              ),
+              foregroundColor: fontColor),
+          onPressed: onTap,
+          icon: icon,
+          iconAlignment: iconAlignment,
+          label: child,
+        ),
     };
     return SizedBox(
       height: height ?? context.h(30),
@@ -132,8 +162,9 @@ class AppButton extends StatelessWidget {
 
   Color get defaultTextColor {
     return switch (buttonType) {
-      ButtonType.elvatedWithIcon || ButtonType.elevated => AppColors.white,
+      ButtonType.elevatedWithIcon || ButtonType.elevated => AppColors.white,
       ButtonType.outLineWithIcon || ButtonType.outline => AppColors.primary,
+      ButtonType.textWithIcon || ButtonType.text => AppColors.primary,
     };
   }
 }

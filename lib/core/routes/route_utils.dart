@@ -17,18 +17,16 @@ class RouteUtils {
         var user = await User.getUser();
         print("Is user Logged in $isLoggedIn");
         print("User ${user?.toJson()}");
+        var unProtectedRoutes = (state.topRoute?.name == AppRoutes.login ||
+            state.topRoute?.name == AppRoutes.register);
 
         /// when user is authenticated
-        if (isLoggedIn &&
-            (state.topRoute?.name == AppRoutes.login ||
-                state.topRoute?.name == AppRoutes.register)) {
+        if (isLoggedIn && unProtectedRoutes) {
           return AppRoutes.home;
         }
 
         /// when user is NOT authenticated
-        if (!isLoggedIn &&
-            (state.topRoute?.name != AppRoutes.login ||
-                state.topRoute?.name != AppRoutes.register)) {
+        if (!isLoggedIn && !unProtectedRoutes) {
           return AppRoutes.login;
         }
 

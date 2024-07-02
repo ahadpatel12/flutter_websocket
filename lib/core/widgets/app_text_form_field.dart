@@ -83,8 +83,12 @@ class AppTextFormField extends StatelessWidget {
 
   OutlineInputBorder get outlineInputBorder => OutlineInputBorder(
         borderRadius: BorderRadius.circular(borderRadius),
-        borderSide: BorderSide(color: borderColor ?? AppColors.transparent),
+        borderSide: BorderSide(color: borderColor ?? AppColors.white),
       );
+
+  // InputBorder get roundedInputBorder => OutlineInputBorder(
+  //       borderRadius: BorderRadius.circular(borderRadius),
+  //     );
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +99,7 @@ class AppTextFormField extends StatelessWidget {
         if (label != null)
           Text(
             label ?? "",
-            style: context.md14.withBlack.weigh500.height1_9,
+            style: context.md14.withWhite.weigh500.height1_9,
           ),
         TextFormField(
           style: fontTextStyle ?? context.md14,
@@ -125,7 +129,7 @@ class AppTextFormField extends StatelessWidget {
             prefixIcon: prefixIcon,
             prefixIconConstraints: prefixIconSize,
             hintText: hint,
-            hintStyle: hintTextStyle ?? context.md14.withGrey78,
+            hintStyle: hintTextStyle ?? context.md14.withWhite.withOpacity(0.6),
             filled: filled,
             disabledBorder: showBorder ? outlineInputBorder : InputBorder.none,
             focusedErrorBorder:

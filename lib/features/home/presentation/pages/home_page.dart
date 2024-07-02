@@ -107,7 +107,8 @@ class HomePage extends StatelessWidget {
                   // Spacer(),
                   Flexible(
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 500),
+                      constraints:
+                          BoxConstraints(maxWidth: AppDimens.defaultMaxWidth),
                       child: Card(
                         color: AppColors.chatBackground,
                         margin: const EdgeInsets.all(AppDimens.defaultPadding),

@@ -155,7 +155,9 @@ class _ChatPageState extends State<ChatPage> {
               Flexible(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                      maxWidth: context.isPC ? 500 : double.infinity),
+                      maxWidth: context.isPC
+                          ? AppDimens.defaultMaxWidth
+                          : double.infinity),
                   child: Padding(
                     padding: const EdgeInsets.all(AppDimens.defaultPadding),
                     child: Column(

@@ -1,6 +1,7 @@
 class AppDimens {
   static const double defaultPadding = space10;
   static const double defaultBorderRadius = borderRadius10;
+  static const double defaultMaxWidth = 500;
 
   static const double space2 = 2;
   static const double space3 = 3;
