@@ -83,7 +83,6 @@ extension TextStyleExtension on BuildContext {
 }
 
 extension StyleExtension on TextStyle {
-
   /// Font colors
   TextStyle get withBlack => copyWith(color: AppColors.black);
 
@@ -97,14 +96,14 @@ extension StyleExtension on TextStyle {
 
   TextStyle get withGreyD9 => copyWith(color: AppColors.greyD9);
 
+  TextStyle get withRed => copyWith(color: AppColors.red);
 
-  TextStyle  withOpacity(double opacity) {
+  TextStyle withOpacity(double opacity) {
     assert(opacity >= 0.0 && opacity <= 1.0);
     return copyWith(color: color?.withOpacity(opacity));
   }
 
-
-/// font weight
+  /// font weight
   TextStyle get weigh300 => copyWith(fontWeight: FontWeight.w300);
 
   TextStyle get weigh400 => copyWith(fontWeight: FontWeight.w400);
@@ -119,7 +118,7 @@ extension StyleExtension on TextStyle {
 
   TextStyle get weigh900 => copyWith(fontWeight: FontWeight.w900);
 
-/// font height
+  /// font height
   TextStyle get height1 => copyWith(height: 1);
 
   TextStyle get height2 => copyWith(height: 2);
@@ -133,7 +132,6 @@ extension StyleExtension on TextStyle {
   TextStyle get height1_8 => copyWith(height: 1.8);
 
   TextStyle get height1_9 => copyWith(height: 1.9);
-
 
   /// text decoration
   TextStyle get primaryLineTrough => copyWith(

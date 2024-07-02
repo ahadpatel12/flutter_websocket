@@ -13,6 +13,7 @@ class AppColors {
   static const Color chatBackground = Color(0xFF202527);
   static const Color grey78 = Color(0xFF787878);
   static const Color greyD9 = Color(0xFFD9D9D9);
+  static const Color red = Colors.red;
   static const Color transparent = Colors.transparent;
 
   /// Primary material color of the app

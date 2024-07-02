@@ -131,6 +131,7 @@ class AppTextFormField extends StatelessWidget {
             hintText: hint,
             hintStyle: hintTextStyle ?? context.md14.withWhite.withOpacity(0.6),
             filled: filled,
+            errorStyle: context.sm12.withRed,
             disabledBorder: showBorder ? outlineInputBorder : InputBorder.none,
             focusedErrorBorder:
                 showBorder ? outlineInputBorder : InputBorder.none,
