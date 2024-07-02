@@ -81,7 +81,7 @@ class HomePage extends StatelessWidget {
                         if (state.responseState == ResponseState.created) {
                           AppSnackBars.showSnackBar(
                               alertType: AlertType.success,
-                              message: "New Room Created");
+                              message: "New Chat Created");
                           context.goNamed(AppRoutes.chat, queryParameters: {
                             "roomId": state.createdRoom!.id
                           });
@@ -105,10 +105,10 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Spacer(),
-                  Flexible(
-                    child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(maxWidth: AppDimens.defaultMaxWidth),
+                  ConstrainedBox(
+                    constraints:
+                        BoxConstraints(maxWidth: AppDimens.defaultMaxWidth),
+                    child: Flexible(
                       child: Card(
                         color: AppColors.chatBackground,
                         margin: const EdgeInsets.all(AppDimens.defaultPadding),
@@ -158,6 +158,7 @@ class HomePage extends StatelessWidget {
                                   Gap(AppDimens.space16),
                                   AppSearchField(
                                     hint: 'Search',
+                                    onChange: (value) {},
                                   ),
                                   Gap(AppDimens.space16),
                                 ],
@@ -185,12 +186,11 @@ class HomePage extends StatelessWidget {
                                             onTap: () {
                                               selectedRoom.value =
                                                   state.rooms[index].id;
-                                              if (!context.isPC)
-                                                context.goNamed(AppRoutes.chat,
-                                                    queryParameters: {
-                                                      "roomId":
-                                                          state.rooms[index].id
-                                                    });
+                                              context.goNamed(AppRoutes.chat,
+                                                  queryParameters: {
+                                                    "roomId":
+                                                        state.rooms[index].id
+                                                  });
                                             },
                                             room: state.rooms[index]);
                                       });
@@ -202,16 +202,16 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (context.isPC)
-                    Expanded(
-                        flex: 3,
-                        child: ValueListenableBuilder(
-                            valueListenable: selectedRoom,
-                            builder: (context, selectedRoomValue, child) {
-                              return ChatPage(
-                                roomId: selectedRoomValue,
-                              );
-                            }))
+                  // if (context.isTablet)
+                  //   Expanded(
+                  //       flex: 3,
+                  //       child: ValueListenableBuilder(
+                  //           valueListenable: selectedRoom,
+                  //           builder: (context, selectedRoomValue, child) {
+                  //             return ChatPage(
+                  //               roomId: selectedRoomValue,
+                  //             );
+                  //           }))
                 ],
               );
             }

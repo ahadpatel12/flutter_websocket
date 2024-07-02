@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_web/core/config/shim_db.dart';
+import 'package:flutter_web/core/user/user.dart';
 import 'package:flutter_web/core/utils/common_functions.dart';
 import 'package:flutter_web/features/chat/data/models/room.dart';
 import 'package:hive/hive.dart';
@@ -21,14 +22,21 @@ class RoomBloc extends Bloc<RoomEvent, RoomState> {
   Future<void> getAllRooms(
       GetAllRoomsEvent event, Emitter<RoomState> emit) async {
     emit.call(state.copyWith(responseState: ResponseState.loading));
-    Box<Room> rooms = await AppLocalDB().getRoomList;
+    Box<Room> rooms = AppLocalDB.roomBox;
+    var user = await User.getCurrentUser();
 
-    if (rooms.isNotEmpty) {
-      List<Room> list = rooms.values.toList();
+    List<Room> roomList =
+        rooms.values.where((e) => e.userId == user!.id).toList();
+    print(roomList);
+    print(rooms.values.map((e) => e.toJson()).toList());
+    print(user!.toJson());
+    if (roomList.isNotEmpty) {
+      // List<Room> list =
+      //     rooms.values.where((e) => e.userId == user!.id).toList();
 
-      list.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-      emit.call(
-          state.copyWith(responseState: ResponseState.success, rooms: list));
+      roomList.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+      emit.call(state.copyWith(
+          responseState: ResponseState.success, rooms: roomList));
       return;
     }
     emit.call(state.copyWith(
@@ -38,8 +46,10 @@ class RoomBloc extends Bloc<RoomEvent, RoomState> {
   Future<void> createRoom(
       CreateRoomEvent event, Emitter<RoomState> emit) async {
     try {
-      var room = Room(id: const Uuid().v1(), createdAt: DateTime.now());
-      Box<Room> rooms = await AppLocalDB().getRoomList;
+      var user = await User.getCurrentUser();
+      var room = Room(
+          id: const Uuid().v1(), userId: user!.id, createdAt: DateTime.now());
+      Box<Room> rooms = AppLocalDB.roomBox;
       rooms.put(room.id, room);
 
       emit.call(state.copyWith(

@@ -37,13 +37,13 @@ class User {
       );
 
   Map<String, dynamic> toMap() => {
-        "id": const Uuid().v1(),
+        "id": id,
         "name": name,
         "password": password,
       };
 
   Future<bool> get isLoggedIn async {
-    var user = await getUser();
+    var user = await getCurrentUser();
     return user != null;
   }
 
@@ -74,11 +74,12 @@ class User {
 
     if (!passwordMatch) throw Exception('Invalid Password');
 
-    await AppLocalDB.putString(key: AppLocalKeys.user, value: user.toJson());
+    await AppLocalDB.putString(
+        key: AppLocalKeys.user, value: userFromDb.toJson());
     return true;
   }
 
-  static Future<User?> getUser() async {
+  static Future<User?> getCurrentUser() async {
     var res = await AppLocalDB.getString(AppLocalKeys.user);
     if (res.isNotEmpty) {
       return User.fromJson(res);

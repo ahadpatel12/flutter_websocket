@@ -14,9 +14,8 @@ class RouteUtils {
       initialLocation: AppRoutes.home,
       redirect: (context, state) async {
         var isLoggedIn = await User().isLoggedIn;
-        var user = await User.getUser();
         print("Is user Logged in $isLoggedIn");
-        print("User ${user?.toJson()}");
+
         var unProtectedRoutes = (state.topRoute?.name == AppRoutes.login ||
             state.topRoute?.name == AppRoutes.register);
 
@@ -30,7 +29,7 @@ class RouteUtils {
           return AppRoutes.login;
         }
 
-        return state.topRoute?.name;
+        return null;
       },
       routes: [
         GoRoute(
@@ -41,10 +40,6 @@ class RouteUtils {
             builder: (context, state) => const ChatPage(),
             name: AppRoutes.chat,
             path: AppRoutes.chat),
-        // GoRoute(
-        //     builder: (context, state) => const ChatListPage(),
-        //     name: AppRoutes.chatList,
-        //     path: AppRoutes.chatList),
         GoRoute(
             builder: (context, state) => RegisterPage(),
             name: AppRoutes.register,

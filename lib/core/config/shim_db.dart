@@ -16,7 +16,7 @@ abstract class AppLocalKeys {
 
 class AppLocalDB extends AppLocalKeys {
   static late Box _box;
-  static late Box roomBox;
+  static late Box<Room> roomBox;
 
   Future<Box<Room>> get getRoomList async =>
       await Hive.openBox<Room>(AppLocalKeys.roomBox);

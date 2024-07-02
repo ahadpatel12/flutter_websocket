@@ -21,7 +21,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       GetAllChatsEvent event, Emitter<ChatState> emit) async {
     emit.call(state.copyWith(responseState: ResponseState.loading));
 
-    var roomList = await AppLocalDB().getRoomList;
+    var roomList = AppLocalDB.roomBox;
     var room = roomList.get(event.roomId);
     emit.call(state.copyWith(
         responseState: ResponseState.success,
@@ -32,7 +32,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> sendMessage(
       AddMessageEvent event, Emitter<ChatState> emit) async {
     try {
-      var roomList = await AppLocalDB().getRoomList;
+      var roomList = AppLocalDB.roomBox;
       var room = roomList.get(event.chat.roomId);
 
       room!.chats = [...room.chats, event.chat];
