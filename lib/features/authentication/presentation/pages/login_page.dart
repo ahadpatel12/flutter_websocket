@@ -38,14 +38,14 @@ class LoginPage extends StatelessWidget {
                 controller: nameController,
               ),
               AppTextFormField(
-                obscureText: true,
+                // obscureText: true,
                 label: 'Password',
                 controller: passwordController,
               ),
               const Gap(AppDimens.space8),
               ElevatedButton(
                   onPressed: () async {
-                    print("current user ${(await User.get())?.toMap()}");
+                    print("current user ${(await User.getUser())?.toMap()}");
                   },
                   child: Text("Get user Name")),
               const Gap(AppDimens.space8),

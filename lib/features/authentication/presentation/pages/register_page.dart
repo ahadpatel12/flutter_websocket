@@ -77,10 +77,10 @@ class RegisterPage extends StatelessWidget {
                           .read<AuthenticationBloc>()
                           .add(RegisterEvent(user: user));
 
-                      var list = await User.getAll();
-                      var currentUser = await User.get();
-                      print("User List = ${list}");
-                      print("Current User = $currentUser");
+                      // var list = await User.getUserList();
+                      // var currentUser = await User.getUser();
+                      // print("User List = ${list}");
+                      // print("Current User = $currentUser");
 
                       // print("User is $user");
                     },

@@ -8,6 +8,7 @@ import 'package:flutter_web/core/extensions/text_style_extension.dart';
 import 'package:flutter_web/core/routes/app_route_keys.dart';
 import 'package:flutter_web/core/routes/navigation_service.dart';
 import 'package:flutter_web/core/config/app_dimens.dart';
+import 'package:flutter_web/core/user/user.dart';
 import 'package:flutter_web/core/utils/app_size.dart';
 import 'package:flutter_web/core/utils/app_snackbar.dart';
 import 'package:flutter_web/core/utils/common_functions.dart';
@@ -49,6 +50,7 @@ class HomePage extends StatelessWidget {
               iconAlignment: IconAlignment.end,
               buttonName: "Logout",
               onTap: () {
+                User.logout();
                 NavigationService()
                     .pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
               },

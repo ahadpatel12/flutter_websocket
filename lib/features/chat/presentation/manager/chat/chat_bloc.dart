@@ -34,9 +34,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       var roomList = await AppLocalDB().getRoomList;
       var room = roomList.get(event.chat.roomId);
-      // var chatList = [...room!.chats, event.chat];
+
       room!.chats = [...room.chats, event.chat];
-      // room.chats.addAll(chatList);
+
       if (room.chats.length > 1) {
         room.chats.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
       }
